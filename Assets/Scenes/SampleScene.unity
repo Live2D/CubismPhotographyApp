@@ -302,7 +302,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11399596147daf641a0c390cebf8abae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rawImage: {fileID: 1859087445}
+  CameraRawImage: {fileID: 1859087445}
 --- !u!114 &566039333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b507e2c8dc23744f94aa46617237add, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _model: {fileID: 114767309537009654, guid: 75ea643df7851af4b939424b7eb7e8f2, type: 3}
+  Model: {fileID: 114767309537009654, guid: 75ea643df7851af4b939424b7eb7e8f2, type: 3}
 --- !u!1 &896965847
 GameObject:
   m_ObjectHideFlags: 0

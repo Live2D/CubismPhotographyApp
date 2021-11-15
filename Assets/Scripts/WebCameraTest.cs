@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class WebCameraTest : MonoBehaviour
 {
     [SerializeField, Tooltip("カメラの画像を映すオブジェクト")]
-    public RawImage _rawImage;
+    public RawImage CameraRawImage;
 
     WebCamTexture _webCamTexture;
 
@@ -16,12 +16,12 @@ public class WebCameraTest : MonoBehaviour
     {
         Application.RequestUserAuthorization(UserAuthorization.WebCam);
         _webCamTexture = new WebCamTexture();
-        _rawImage.texture = _webCamTexture;
+        CameraRawImage.texture = _webCamTexture;
         _webCamDevices = new List<WebCamDevice>();
-        Vector3 angles = _rawImage.GetComponent<RectTransform>().eulerAngles;
+        Vector3 angles = CameraRawImage.GetComponent<RectTransform>().eulerAngles;
         angles.z = -90;
 
-        _rawImage.GetComponent<RectTransform>().eulerAngles = angles;
+        CameraRawImage.GetComponent<RectTransform>().eulerAngles = angles;
     }
 
     //カメラの状態を切り替え
@@ -111,9 +111,9 @@ public class WebCameraTest : MonoBehaviour
     private void SetCamSize()
     {
         // 縦長の画面に映像の大きさを修正
-        _rawImage.rectTransform.sizeDelta = new Vector2(Screen.height, Screen.width);
+        CameraRawImage.rectTransform.sizeDelta = new Vector2(Screen.height, Screen.width);
 
         //カメラの映像をテクスチャへ反映
-        _rawImage.texture = _webCamTexture;
+        CameraRawImage.texture = _webCamTexture;
     }
 }
