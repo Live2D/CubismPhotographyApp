@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Live2D.Cubism.Core;
+using Live2D.Cubism.Framework.Raycasting;
 using UnityEngine;
 
 public class Live2DModelManager : MonoBehaviour
@@ -11,7 +12,7 @@ public class Live2DModelManager : MonoBehaviour
     #region 定数
 
     // 処理の対象外とする2点間の距離
-    private const float UnprocessedDistance = 0.001f;
+    private const float UnprocessedValue = 0.001f;
 
     // 最小拡大率
     private const float MinScale = 0.5f;
@@ -26,8 +27,27 @@ public class Live2DModelManager : MonoBehaviour
 
     #region 変数
 
+    // メインカメラの参照
+    private Camera _mainCamera;
+
     // 生成されたモデルのオブジェクト
     private GameObject _modelObject;
+
+    // モデルと光線の衝突判定用コンポーネント
+    private CubismRaycaster _modelRaycaster;
+
+    // 光線と衝突したアートメッシュの配列
+    // 判定するアートメッシュにはCubismRaycastableが必要
+    private CubismRaycastHit[] _raycastHits;
+
+    // タッチし始めた位置
+    private Vector3 _touchPosition;
+
+    // 最後にタッチし始めた位置
+    private Vector3 _previousTouchPosition;
+
+    // モデルのスクリーン座標
+    private Vector3 _modelScreenPosition;
 
     // 最後に2本指でタッチした時の2点間の距離
     private float _previousDistance;
@@ -62,21 +82,66 @@ public class Live2DModelManager : MonoBehaviour
         _moveDistance = 0.0f;
         _modelScaleRate = 0.0f;
         _modelScaleVector3 = Vector3.zero;
+        _touchPosition = Vector3.zero;
+        _previousTouchPosition = Vector3.zero;
+        _modelScreenPosition = Vector3.zero;
+
+        // カメラへの参照を取得
+        _mainCamera = Camera.main;
 
         // モデルをシーンへ生成
-        _modelObject = Instantiate(Model.gameObject,new Vector3(0,0,0),Model.gameObject.transform.rotation);
+        _modelObject = Instantiate(Model.gameObject, Vector3.zero, Quaternion.identity);
+
+        // 光線との衝突判定用コンポーネントを取得
+        _modelRaycaster = _modelObject.GetComponent<CubismRaycaster>();
+
+        // 衝突したアートメッシュの配列の初期化
+        // 保存する個数は任意（今回は4つまで）
+        _raycastHits = new CubismRaycastHit[4];
     }
 
     // Update is called once per frame
     void Update()
     {
+        // タッチの判定が無かった場合
+        if (Input.touchCount == 0)
+        {
+            return;
+        }
+
+        // 指がモデルに触れていた場合
         if(Input.touchCount == 1)
         {
             Touch touch = Input.GetTouch(0);
 
-            if (touch.phase == TouchPhase.Began)
+            _touchPosition = touch.position;
+
+            // タッチした位置から判定用の光線を飛ばす
+            Ray ray = _mainCamera.ScreenPointToRay(_touchPosition);
+
+            // 光線と衝突したアートメッシュの個数を取得
+            int hitCount = _modelRaycaster.Raycast(ray, _raycastHits);
+
+            // モデルと光線が衝突したら処理を始める
+            if (hitCount > 0)
             {
-                //Debug.Log("TouchBegin!");
+                if (touch.phase == TouchPhase.Moved)
+                {
+                    // 移動した移動量を計算
+                    Vector3 positionDifference = _touchPosition - _previousTouchPosition;
+
+                    // モデルの位置情報をスクリーン座標へ変換
+                    _modelScreenPosition = _mainCamera.WorldToScreenPoint(_modelObject.transform.position);
+
+                    // 移動量をモデルのスクリーン座標へ加算
+                    _modelScreenPosition += new Vector3(positionDifference.x, positionDifference.y);
+
+                    // 移動量を加算した位置情報をモデルオブジェクトへ適用
+                    _modelObject.transform.position = _mainCamera.ScreenToWorldPoint(_modelScreenPosition);
+                }
+
+                // 最後に観測した位置を保存
+                _previousTouchPosition = _touchPosition;
             }
         }
 
@@ -89,8 +154,6 @@ public class Live2DModelManager : MonoBehaviour
             // 2本指でタッチし始めた
             if (touch2.phase == TouchPhase.Began)
             {
-                Debug.Log("開始");
-
                 // 2点間の距離を取得
                 _beginDistance = Vector2.Distance(touch1.position, touch2.position);
                 
@@ -104,7 +167,7 @@ public class Live2DModelManager : MonoBehaviour
                 _moveDistance = Vector2.Distance(touch1.position, touch2.position);
 
                 // 2点間の距離が一定値以下だった場合は処理を行わない
-                if (_beginDistance < UnprocessedDistance || _moveDistance < UnprocessedDistance)
+                if (_beginDistance < UnprocessedValue || _moveDistance < UnprocessedValue)
                 {
                     return;
                 }
@@ -130,5 +193,21 @@ public class Live2DModelManager : MonoBehaviour
                 _modelObject.transform.localScale = new Vector3(_modelScaleRate, _modelScaleRate, 1.0f);
             }
         }
+    }
+
+    // モデルの状態をリセットする
+    public void ModelReset()
+    {
+        // モデルのトランスフォームを取得
+        Transform modelObjectTransform = _modelObject.transform;
+
+        // モデルの位置情報を初期化
+        modelObjectTransform.position = Vector3.zero;
+
+        // モデルの回転情報を初期化
+        modelObjectTransform.rotation = Quaternion.identity;
+
+        // モデルの拡大率を初期化
+        modelObjectTransform.localScale = Vector3.one;
     }
 }
