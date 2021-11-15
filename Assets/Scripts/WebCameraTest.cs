@@ -4,43 +4,43 @@ using UnityEngine.UI;
 
 public class WebCameraTest : MonoBehaviour
 {
+    [SerializeField, Tooltip("カメラの画像を映すオブジェクト")]
+    public RawImage _rawImage;
 
-    public RawImage rawImage;
+    WebCamTexture _webCamTexture;
 
-    WebCamTexture webCamTexture;
-
-    List<WebCamDevice> webCamDevices;
-    int selectCamera = 0;
+    List<WebCamDevice> _webCamDevices;
+    int _selectCamera = 0;
 
     void Start()
     {
         Application.RequestUserAuthorization(UserAuthorization.WebCam);
-        webCamTexture = new WebCamTexture();
-        rawImage.texture = webCamTexture;
-        webCamDevices = new List<WebCamDevice>();
-        Vector3 angles = rawImage.GetComponent<RectTransform>().eulerAngles;
+        _webCamTexture = new WebCamTexture();
+        _rawImage.texture = _webCamTexture;
+        _webCamDevices = new List<WebCamDevice>();
+        Vector3 angles = _rawImage.GetComponent<RectTransform>().eulerAngles;
         angles.z = -90;
 
-        rawImage.GetComponent<RectTransform>().eulerAngles = angles;
+        _rawImage.GetComponent<RectTransform>().eulerAngles = angles;
     }
 
     //カメラの状態を切り替え
     public void CamStateChange()
     {
-        if (!webCamTexture)
+        if (!_webCamTexture)
         {
             return;
         }
 
-        if (webCamTexture.isPlaying)
+        if (_webCamTexture.isPlaying)
         {
             // カメラを停止
-            webCamTexture.Stop();
+            _webCamTexture.Stop();
         }
         else
         {
             // カメラを開始
-            webCamTexture.Play();
+            _webCamTexture.Play();
         }
     }
 
@@ -48,29 +48,29 @@ public class WebCameraTest : MonoBehaviour
     public void ChangeCamera()
     {
         //カメラの個数を取得
-        int cameras = webCamDevices.Count;
+        int cameras = _webCamDevices.Count;
         if (cameras < 1)
         {
             // カメラが1台しかなかったら実行せず終了
             return;
         }
 
-        selectCamera++;
-        if (selectCamera >= cameras) selectCamera = 0;
+        _selectCamera++;
+        if (_selectCamera >= cameras) _selectCamera = 0;
 
-        if (!webCamTexture)
+        if (!_webCamTexture)
         {
             return;
         }
         // カメラを停止
-        webCamTexture.Stop();
+        _webCamTexture.Stop();
         //カメラを変更
-        webCamTexture = new WebCamTexture(webCamDevices[selectCamera].name);
+        _webCamTexture = new WebCamTexture(_webCamDevices[_selectCamera].name);
         
         SetCamSize();
 
         // 別カメラを開始
-        webCamTexture.Play();
+        _webCamTexture.Play();
     }
 
     // デバイス情報を更新
@@ -80,30 +80,30 @@ public class WebCameraTest : MonoBehaviour
         for (int i = 0; i < WebCamTexture.devices.Length; i++)
         {
             // 条件
-            if (WebCamTexture.devices[i].name.Contains("Remote") && !webCamDevices.Contains(WebCamTexture.devices[i]))
+            if (WebCamTexture.devices[i].name.Contains("Remote") && !_webCamDevices.Contains(WebCamTexture.devices[i]))
             {
                 // 条件に合うカメラがあったら登録
-                webCamDevices.Add(WebCamTexture.devices[i]);
+                _webCamDevices.Add(WebCamTexture.devices[i]);
             }
         }
 
         // 条件に合うデバイス数が1つでも登録されていたなら処理を始める
-        if (webCamDevices.Count >0)
+        if (_webCamDevices.Count >0)
         {
-            if (webCamTexture)
+            if (_webCamTexture)
             {
                 // カメラを停止
-                webCamTexture.Stop();
+                _webCamTexture.Stop();
             }
 
             //カメラを変更
-            webCamTexture = new WebCamTexture(webCamDevices[0].name);
+            _webCamTexture = new WebCamTexture(_webCamDevices[0].name);
 
             // カメラのサイズを設定
             SetCamSize();
 
             // 事故防止用にカメラを停止
-            webCamTexture.Stop();
+            _webCamTexture.Stop();
         }
     }
 
@@ -111,9 +111,9 @@ public class WebCameraTest : MonoBehaviour
     private void SetCamSize()
     {
         // 縦長の画面に映像の大きさを修正
-        rawImage.rectTransform.sizeDelta = new Vector2(Screen.height, Screen.width);
+        _rawImage.rectTransform.sizeDelta = new Vector2(Screen.height, Screen.width);
 
         //カメラの映像をテクスチャへ反映
-        rawImage.texture = webCamTexture;
+        _rawImage.texture = _webCamTexture;
     }
 }
