@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WebCameraTest : MonoBehaviour
+public class CameraRenderer : MonoBehaviour
 {
     [SerializeField, Tooltip("カメラの画像を映すオブジェクト")]
     public RawImage CameraRawImage;
