@@ -67,7 +67,7 @@ public class Live2DModelManager : MonoBehaviour
     #endregion
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         // モデルがセットされていなかった場合
         if (!Model)
@@ -101,7 +101,7 @@ public class Live2DModelManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // タッチの判定が無かった場合
         if (Input.touchCount == 0)
@@ -112,15 +112,15 @@ public class Live2DModelManager : MonoBehaviour
         // 指がモデルに触れていた場合
         if(Input.touchCount == 1)
         {
-            Touch touch = Input.GetTouch(0);
+            var touch = Input.GetTouch(0);
 
             _touchPosition = touch.position;
 
             // タッチした位置から判定用の光線を飛ばす
-            Ray ray = _mainCamera.ScreenPointToRay(_touchPosition);
+            var ray = _mainCamera.ScreenPointToRay(_touchPosition);
 
             // 光線と衝突したアートメッシュの個数を取得
-            int hitCount = _modelRaycaster.Raycast(ray, _raycastHits);
+            var hitCount = _modelRaycaster.Raycast(ray, _raycastHits);
 
             // モデルと光線が衝突したら処理を始める
             if (hitCount > 0)
@@ -128,7 +128,7 @@ public class Live2DModelManager : MonoBehaviour
                 if (touch.phase == TouchPhase.Moved)
                 {
                     // 移動した移動量を計算
-                    Vector3 positionDifference = _touchPosition - _previousTouchPosition;
+                    var positionDifference = _touchPosition - _previousTouchPosition;
 
                     // モデルの位置情報をスクリーン座標へ変換
                     _modelScreenPosition = _mainCamera.WorldToScreenPoint(_modelObject.transform.position);
@@ -148,8 +148,8 @@ public class Live2DModelManager : MonoBehaviour
         // ピンチインアウト処理
         if (Input.touchCount >= 2)
         {
-            Touch touch1 = Input.GetTouch(0);
-            Touch touch2 = Input.GetTouch(1);
+            var touch1 = Input.GetTouch(0);
+            var touch2 = Input.GetTouch(1);
 
             // 2本指でタッチし始めた
             if (touch2.phase == TouchPhase.Began)
@@ -171,26 +171,26 @@ public class Live2DModelManager : MonoBehaviour
                 {
                     return;
                 }
-                else
-                {
-                    // モデルから現在の拡大率を取得
-                    _modelScaleVector3 = _modelObject.transform.localScale;
-                    
-                    // 取得した拡大率を計算用に変数へ代入
-                    _modelScaleRate = _modelScaleVector3.x;
 
-                    // 距離の差を元に拡大率へ変換して加算
-                    _modelScaleRate += (_moveDistance - _previousDistance) / DistanceToScaleRate;
+                // モデルから現在の拡大率を取得
+                _modelScaleVector3 = _modelObject.transform.localScale;
 
-                    // 最小拡大率と最大拡大率の範囲に収める
-                    _modelScaleRate = Mathf.Clamp(_modelScaleRate, MinScale, MaxScale);
+                // 取得した拡大率を計算用に変数へ代入
+                _modelScaleRate = _modelScaleVector3.x;
 
-                    // 最後に観測した2点間の距離を保存
-                    _previousDistance = _moveDistance;
-                }
+                // 距離の差を元に拡大率へ変換して加算
+                _modelScaleRate += (_moveDistance - _previousDistance) / DistanceToScaleRate;
+
+                // 最小拡大率と最大拡大率の範囲に収める
+                _modelScaleRate = Mathf.Clamp(_modelScaleRate, MinScale, MaxScale);
+
+                // 最後に観測した2点間の距離を保存
+                _previousDistance = _moveDistance;
 
                 // 拡大率を適用（Z値は奥行きであるため、固定）
-                _modelObject.transform.localScale = new Vector3(_modelScaleRate, _modelScaleRate, 1.0f);
+                _modelScaleVector3.x = _modelScaleRate;
+                _modelScaleVector3.y = _modelScaleRate;
+                _modelObject.transform.localScale = _modelScaleVector3;
             }
         }
     }
@@ -199,7 +199,7 @@ public class Live2DModelManager : MonoBehaviour
     public void ModelReset()
     {
         // モデルのトランスフォームを取得
-        Transform modelObjectTransform = _modelObject.transform;
+        var modelObjectTransform = _modelObject.transform;
 
         // モデルの位置情報を初期化
         modelObjectTransform.position = Vector3.zero;

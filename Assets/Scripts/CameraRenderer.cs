@@ -7,18 +7,18 @@ public class CameraRenderer : MonoBehaviour
     [SerializeField, Tooltip("カメラの画像を映すオブジェクト")]
     public RawImage CameraRawImage;
 
-    WebCamTexture _webCamTexture;
+    private WebCamTexture _webCamTexture;
 
-    List<WebCamDevice> _webCamDevices;
-    int _selectCamera = 0;
+    private List<WebCamDevice> _webCamDevices;
+    private int _selectCamera = 0;
 
-    void Start()
+    private void Start()
     {
         Application.RequestUserAuthorization(UserAuthorization.WebCam);
         _webCamTexture = new WebCamTexture();
         CameraRawImage.texture = _webCamTexture;
         _webCamDevices = new List<WebCamDevice>();
-        Vector3 angles = CameraRawImage.GetComponent<RectTransform>().eulerAngles;
+        var angles = CameraRawImage.GetComponent<RectTransform>().eulerAngles;
         angles.z = -90;
 
         CameraRawImage.GetComponent<RectTransform>().eulerAngles = angles;
@@ -48,7 +48,7 @@ public class CameraRenderer : MonoBehaviour
     public void ChangeCamera()
     {
         //カメラの個数を取得
-        int cameras = _webCamDevices.Count;
+        var cameras = _webCamDevices.Count;
         if (cameras < 1)
         {
             // カメラが1台しかなかったら実行せず終了
@@ -110,8 +110,12 @@ public class CameraRenderer : MonoBehaviour
     // カメラのサイズを設定
     private void SetCamSize()
     {
-        // 縦長の画面に映像の大きさを修正
-        CameraRawImage.rectTransform.sizeDelta = new Vector2(Screen.height, Screen.width);
+        // 縦長の画面になるように映像の大きさを修正
+        var sizeDelta = CameraRawImage.rectTransform.sizeDelta;
+        sizeDelta.x = Screen.height;
+        sizeDelta.y = Screen.width;
+
+        CameraRawImage.rectTransform.sizeDelta = sizeDelta;
 
         //カメラの映像をテクスチャへ反映
         CameraRawImage.texture = _webCamTexture;
