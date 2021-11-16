@@ -52,6 +52,9 @@ public class Live2DModelManager : MonoBehaviour
     // 最後に2本指でタッチした時の2点間の距離
     private float _previousDistance = 0.0f;
 
+    // 最後に2本指でタッチした時のベクトル
+    private Vector2 _previousVector = Vector2.zero;
+
     // 2本指でタッチし始めた時の2点間の距離
     private float _beginDistance = 0.0f;
 
@@ -63,6 +66,9 @@ public class Live2DModelManager : MonoBehaviour
 
     // モデルの拡大率（代入・取得用）
     private Vector3 _modelScaleVector3 = Vector3.zero;
+
+    // モデルの角度情報
+    private Vector3 _modelEulerAngles = Vector3.zero;
 
     #endregion
 
@@ -136,7 +142,7 @@ public class Live2DModelManager : MonoBehaviour
             }
         }
 
-        // ピンチインアウト処理
+        // ピンチインアウト・回転処理
         if (Input.touchCount >= 2)
         {
             var touch1 = Input.GetTouch(0);
@@ -150,6 +156,12 @@ public class Live2DModelManager : MonoBehaviour
                 
                 // 最後に観測した2点間の距離を保存
                 _previousDistance = _beginDistance;
+
+                // 2点間のベクトルを取得
+                var beginVector = touch1.position - touch2.position;
+
+                // 最後に観測した2点間のベクトルを保存
+                _previousVector = beginVector;
             }
             // ピンチインアウト開始
             else if(touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
@@ -162,6 +174,8 @@ public class Live2DModelManager : MonoBehaviour
                 {
                     return;
                 }
+
+                #region 拡大率
 
                 // モデルから現在の拡大率を取得
                 _modelScaleVector3 = _modelObject.transform.localScale;
@@ -182,6 +196,37 @@ public class Live2DModelManager : MonoBehaviour
                 _modelScaleVector3.x = _modelScaleRate;
                 _modelScaleVector3.y = _modelScaleRate;
                 _modelObject.transform.localScale = _modelScaleVector3;
+
+                #endregion
+
+                #region 回転
+
+                // モデルから現在の角度情報を取得
+                _modelEulerAngles = _modelObject.transform.localEulerAngles;
+
+                // 2点間のベクトルを取得
+                var differenceVector = touch1.position - touch2.position;
+
+                // 前フレームからの角度を求める
+                var angle = Vector2.Angle(_previousVector, differenceVector);
+
+                // 3次元ベクトルで外積を計算
+                var cross = Vector3.Cross(_previousVector, differenceVector);
+
+                // 外積の値が負なら角度に負の値を掛ける
+                if (cross.z < 0)
+                {
+                    angle *= -1;
+                }
+
+                // 角度情報をモデルへ適用
+                _modelEulerAngles.z += angle;
+                _modelObject.transform.localEulerAngles = _modelEulerAngles;
+
+                // 最後に観測した2点間のベクトルを保存
+                _previousVector = differenceVector;
+
+                #endregion
             }
         }
     }
