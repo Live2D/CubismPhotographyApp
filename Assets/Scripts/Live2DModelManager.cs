@@ -41,28 +41,28 @@ public class Live2DModelManager : MonoBehaviour
     private CubismRaycastHit[] _raycastHits;
 
     // タッチし始めた位置
-    private Vector3 _touchPosition;
+    private Vector3 _touchPosition = Vector3.zero;
 
     // 最後にタッチし始めた位置
-    private Vector3 _previousTouchPosition;
+    private Vector3 _previousTouchPosition = Vector3.zero;
 
     // モデルのスクリーン座標
-    private Vector3 _modelScreenPosition;
+    private Vector3 _modelScreenPosition = Vector3.zero;
 
     // 最後に2本指でタッチした時の2点間の距離
-    private float _previousDistance;
+    private float _previousDistance = 0.0f;
 
     // 2本指でタッチし始めた時の2点間の距離
-    private float _beginDistance;
+    private float _beginDistance = 0.0f;
 
     // ピンチインアウトを始めた時の2点間の距離
-    private float _moveDistance;
+    private float _moveDistance = 0.0f;
 
     // モデルに適用する共通の拡大率
-    private float _modelScaleRate;
+    private float _modelScaleRate = 0.0f;
 
     // モデルの拡大率（代入・取得用）
-    private Vector3 _modelScaleVector3;
+    private Vector3 _modelScaleVector3 = Vector3.zero;
 
     #endregion
 
@@ -75,16 +75,6 @@ public class Live2DModelManager : MonoBehaviour
            Debug.LogError("[Live2DModelManager]: Model is empty!!");
            Application.Quit();
         }
-
-        // 変数の初期化
-        _previousDistance = 0.0f;
-        _beginDistance = 0.0f;
-        _moveDistance = 0.0f;
-        _modelScaleRate = 0.0f;
-        _modelScaleVector3 = Vector3.zero;
-        _touchPosition = Vector3.zero;
-        _previousTouchPosition = Vector3.zero;
-        _modelScreenPosition = Vector3.zero;
 
         // カメラへの参照を取得
         _mainCamera = Camera.main;
@@ -134,7 +124,8 @@ public class Live2DModelManager : MonoBehaviour
                     _modelScreenPosition = _mainCamera.WorldToScreenPoint(_modelObject.transform.position);
 
                     // 移動量をモデルのスクリーン座標へ加算
-                    _modelScreenPosition += new Vector3(positionDifference.x, positionDifference.y);
+                    _modelScreenPosition.x += positionDifference.x;
+                    _modelScreenPosition.y += positionDifference.y;
 
                     // 移動量を加算した位置情報をモデルオブジェクトへ適用
                     _modelObject.transform.position = _mainCamera.ScreenToWorldPoint(_modelScreenPosition);
