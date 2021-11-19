@@ -70,6 +70,9 @@ public class Live2DModelManager : MonoBehaviour
     // モデルの角度情報
     private Vector3 _modelEulerAngles = Vector3.zero;
 
+    // モデルが左右反転しているか
+    private bool _isModelInversion = false;
+
     #endregion
 
     // Start is called before the first frame update
@@ -193,7 +196,8 @@ public class Live2DModelManager : MonoBehaviour
                 _previousDistance = _moveDistance;
 
                 // 拡大率を適用（Z値は奥行きであるため、固定）
-                _modelScaleVector3.x = _modelScaleRate;
+                // 左右反転機能がONならXの値を負にする
+                _modelScaleVector3.x = _isModelInversion ? -_modelScaleRate : _modelScaleRate;
                 _modelScaleVector3.y = _modelScaleRate;
                 _modelObject.transform.localScale = _modelScaleVector3;
 
@@ -229,6 +233,13 @@ public class Live2DModelManager : MonoBehaviour
                 #endregion
             }
         }
+    }
+
+    // ボタンを押したら左右反転機能切り替え
+    public void ModelInversion()
+    {
+        // 機能を切り替える
+        _isModelInversion = !_isModelInversion;
     }
 
     // モデルの状態をリセットする
