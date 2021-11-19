@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using Live2D.Cubism.Core;
 using Live2D.Cubism.Framework.Raycasting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Live2DModelManager : MonoBehaviour
 {
     [SerializeField, Tooltip("モデルのプレハブをアタッチする場所")]
     public CubismModel Model;
+
+    [SerializeField, Tooltip("モデルの反転ボタン")]
+    public Button ModelInversionButton;
 
     #region 定数
 
@@ -240,6 +244,29 @@ public class Live2DModelManager : MonoBehaviour
     {
         // 機能を切り替える
         _isModelInversion = !_isModelInversion;
+
+        // モデルから現在の拡大率を取得
+        _modelScaleVector3 = _modelObject.transform.localScale;
+        
+        // Xの拡大率を反転
+        _modelScaleVector3.x = -_modelScaleVector3.x;
+        
+        // 拡大率を適用
+        _modelObject.transform.localScale = _modelScaleVector3;
+
+        var text = "";
+
+        // 現在の状態に応じてテキストの内容を切り替える
+        if (_isModelInversion)
+        {
+            text = "Change : OFF";
+        }
+        else
+        {
+            text = "Change : ON";
+        }
+
+        ModelInversionButton.GetComponentInChildren<Text>().text = text;
     }
 
     // モデルの状態をリセットする
