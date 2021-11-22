@@ -41,6 +41,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // UIの可視・不可視の切り替え
     public void SwitchTransparency()
     {
         // コンポーネント取得
@@ -91,6 +92,7 @@ public class UIManager : MonoBehaviour
         _isUiTransparent = !_isUiTransparent;
     }
 
+    // メニューの切り替え
     public void MenuSwitch()
     {
         // _activeMenuIndex + 1の値が配列の長さ以上になるなら配列の最初に戻す
