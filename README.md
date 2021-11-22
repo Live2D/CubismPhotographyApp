@@ -1,1 +1,1 @@
-# CubismPolaroidApp
+# CubismPhotographyApp
