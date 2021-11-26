@@ -85,7 +85,7 @@ public class Live2DModelManager : MonoBehaviour
         // モデルがセットされていなかった場合
         if (!Model)
         {
-           Debug.LogError("[Live2DModelManager]: Model is empty!!");
+           Debug.LogError("[Live2DModelManager]: モデルがアタッチされていません");
            Application.Quit();
         }
 
@@ -259,11 +259,11 @@ public class Live2DModelManager : MonoBehaviour
         // 現在の状態に応じてテキストの内容を切り替える
         if (_isModelInversion)
         {
-            text = "Change : OFF";
+            text = "反転 : ON";
         }
         else
         {
-            text = "Change : ON";
+            text = "反転 : OFF";
         }
 
         ModelInversionButton.GetComponentInChildren<Text>().text = text;
@@ -283,5 +283,11 @@ public class Live2DModelManager : MonoBehaviour
 
         // モデルの拡大率を初期化
         modelObjectTransform.localScale = Vector3.one;
+
+        // モデルの反転状態を初期化
+        _isModelInversion = false;
+        ModelInversionButton.GetComponentInChildren<Text>().text = "反転 : OFF";
+
+        Debug.Log("モデルの状態を初期化しました");
     }
 }
