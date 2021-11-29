@@ -70,85 +70,12 @@ public class CameraRenderer : MonoBehaviour
             return;
         }
 
-        var angles = CameraRawImage.GetComponent<RectTransform>().eulerAngles;
-
         // 現在の状態を保存
         _previousDeviceOrientation = _currentDeviceOrientation;
         _currentDeviceOrientation = deviceOrientation;
 
-        // 画面の回転に合わせてカメラを回転
-        switch (_currentDeviceOrientation)
-        {
-            // 縦長
-            case DeviceOrientation.Portrait:
-                angles.z = CamPortraitAngle;
-                break;
-            case DeviceOrientation.PortraitUpsideDown:
-                angles.z = -CamPortraitAngle;
-                break;
-
-            //横長
-            case DeviceOrientation.LandscapeLeft:
-                if (_webCamTexture.deviceName.Contains("Back"))
-                {
-                    angles.z = CamLandscapeNormalAngle;
-                }
-                else
-                {
-                    angles.z = CamLandscapeInversionAngle;
-                }
-                break;
-            case DeviceOrientation.LandscapeRight:
-                if (_webCamTexture.deviceName.Contains("Back"))
-                {
-                    angles.z = CamLandscapeInversionAngle;
-                }
-                else
-                {
-                    angles.z = CamLandscapeNormalAngle;
-                }
-                break;
-
-            // 画面を上にしているか下に向けているならば条件分岐する
-            case DeviceOrientation.FaceUp:
-            case DeviceOrientation.FaceDown:
-
-                // 以前のデバイスの状態から取得
-                switch (_previousDeviceOrientation)
-                {
-                    // 縦長
-                    case DeviceOrientation.Portrait:
-                        angles.z = CamPortraitAngle;
-                        break;
-                    case DeviceOrientation.PortraitUpsideDown:
-                        angles.z = -CamPortraitAngle;
-                        break;
-                    //横長
-                    case DeviceOrientation.LandscapeLeft:
-                        if (_webCamTexture.deviceName.Contains("Back"))
-                        {
-                            angles.z = CamLandscapeNormalAngle;
-                        }
-                        else
-                        {
-                            angles.z = CamLandscapeInversionAngle;
-                        }
-                        break;
-                    case DeviceOrientation.LandscapeRight:
-                        if (_webCamTexture.deviceName.Contains("Back"))
-                        {
-                            angles.z = CamLandscapeInversionAngle;
-                        }
-                        else
-                        {
-                            angles.z = CamLandscapeNormalAngle;
-                        }
-                        break;
-                }
-                break;
-        }
-
-        CameraRawImage.GetComponent<RectTransform>().eulerAngles = angles;
+        // 画面の回転に合わせて映像の大きさや角度を修正
+        SetCameraRawImageProperty();
     }
 
     //カメラの状態を切り替え
@@ -199,7 +126,11 @@ public class CameraRenderer : MonoBehaviour
         _webCamTexture = new WebCamTexture(_webCamDevices[_selectCamera].name);
         Debug.Log($"現在のカメラ: {_webCamDevices[_selectCamera].name}");
 
-        SetCamSize();
+        //カメラの映像をテクスチャへ反映
+        CameraRawImage.texture = _webCamTexture;
+
+        // 画面の回転に合わせて映像の大きさや角度を修正
+        SetCameraRawImageProperty();
 
         // 別カメラを開始
         _webCamTexture.Play();
@@ -235,34 +166,97 @@ public class CameraRenderer : MonoBehaviour
             _webCamTexture = new WebCamTexture(_webCamDevices[0].name);
             Debug.Log($"現在のカメラ: {_webCamDevices[0].name}");
 
-            // カメラのサイズを設定
-            SetCamSize();
+            //カメラの映像をテクスチャへ反映
+            CameraRawImage.texture = _webCamTexture;
+
+            // 画面の回転に合わせて映像の大きさや角度を修正
+            SetCameraRawImageProperty();
 
             // 事故防止用にカメラを停止
             _webCamTexture.Stop();
         }
     }
 
-    // カメラのサイズを設定
-    private void SetCamSize()
+    // 画面の回転に合わせて映像の大きさや角度を修正
+    void SetCameraRawImageProperty()
     {
-        // 画面の回転に合わせて映像の大きさを修正
+        // カメラのサイズを設定
         var sizeDelta = CameraRawImage.rectTransform.sizeDelta;
+        var angles = CameraRawImage.rectTransform.eulerAngles;
 
+        // 画面の回転に合わせてサイズと映像の角度を変更
         switch (_currentDeviceOrientation)
         {
             // 縦長
             case DeviceOrientation.Portrait:
+                angles.z = CamPortraitAngle;
+                switch (_previousDeviceOrientation)
+                {
+                    case DeviceOrientation.FaceUp:
+                    case DeviceOrientation.FaceDown:
+                        sizeDelta.x = Screen.height;
+                        sizeDelta.y = Screen.width;
+                        break;
+                    default:
+                        sizeDelta.x = Screen.width;
+                        sizeDelta.y = Screen.height;
+                        break;
+                }
+                break;
             case DeviceOrientation.PortraitUpsideDown:
-                sizeDelta.y = Screen.height;
-                sizeDelta.x = Screen.width;
+                angles.z = -CamPortraitAngle;
+                switch (_previousDeviceOrientation)
+                {
+                    case DeviceOrientation.FaceUp:
+                    case DeviceOrientation.FaceDown:
+                        sizeDelta.x = Screen.height;
+                        sizeDelta.y = Screen.width;
+                        break;
+                    default:
+                        sizeDelta.x = Screen.width;
+                        sizeDelta.y = Screen.height;
+                        break;
+                }
                 break;
 
-            // 横長
+            //横長
             case DeviceOrientation.LandscapeLeft:
+                angles.z = _webCamTexture.deviceName.Contains("Back")
+                    ? CamLandscapeNormalAngle
+                    : CamLandscapeInversionAngle;
+
+                // 以前のデバイスの状態から取得
+                switch (_previousDeviceOrientation)
+                {
+                    case DeviceOrientation.FaceUp:
+                    case DeviceOrientation.FaceDown:
+                        sizeDelta.x = Screen.width;
+                        sizeDelta.y = Screen.height;
+                        break;
+                    default:
+                        sizeDelta.x = Screen.height;
+                        sizeDelta.y = Screen.width;
+                        break;
+                }
+                break;
             case DeviceOrientation.LandscapeRight:
-                sizeDelta.x = Screen.width;
-                sizeDelta.y = Screen.height;
+                angles.z = _webCamTexture.deviceName.Contains("Back")
+                    ? CamLandscapeInversionAngle
+                    : CamLandscapeNormalAngle;
+
+                // 以前のデバイスの状態から取得
+                switch (_previousDeviceOrientation)
+                {
+                    case DeviceOrientation.FaceUp:
+                    case DeviceOrientation.FaceDown:
+                        sizeDelta.x = Screen.width;
+                        sizeDelta.y = Screen.height;
+                        break;
+                    default:
+                        sizeDelta.x = Screen.height;
+                        sizeDelta.y = Screen.width;
+                        break;
+                }
                 break;
 
             // 画面を上にしているか下に向けているならば条件分岐する
@@ -274,13 +268,27 @@ public class CameraRenderer : MonoBehaviour
                 {
                     // 縦長
                     case DeviceOrientation.Portrait:
+                        angles.z = CamPortraitAngle;
+                        sizeDelta.x = Screen.height;
+                        sizeDelta.y = Screen.width;
+                        break;
                     case DeviceOrientation.PortraitUpsideDown:
-                        sizeDelta.y = Screen.height;
-                        sizeDelta.x = Screen.width;
+                        angles.z = -CamPortraitAngle;
+                        sizeDelta.x = Screen.height;
+                        sizeDelta.y = Screen.width;
                         break;
                     //横長
                     case DeviceOrientation.LandscapeLeft:
+                        angles.z = _webCamTexture.deviceName.Contains("Back")
+                            ? CamLandscapeNormalAngle
+                            : CamLandscapeInversionAngle;
+                        sizeDelta.x = Screen.width;
+                        sizeDelta.y = Screen.height;
+                        break;
                     case DeviceOrientation.LandscapeRight:
+                        angles.z = _webCamTexture.deviceName.Contains("Back")
+                            ? CamLandscapeInversionAngle
+                            : CamLandscapeNormalAngle;
                         sizeDelta.x = Screen.width;
                         sizeDelta.y = Screen.height;
                         break;
@@ -288,9 +296,9 @@ public class CameraRenderer : MonoBehaviour
                 break;
         }
 
-        CameraRawImage.rectTransform.sizeDelta = sizeDelta;
+        CameraRawImage.rectTransform.eulerAngles = angles;
 
-        //カメラの映像をテクスチャへ反映
-        CameraRawImage.texture = _webCamTexture;
+        // サイズの変更
+        CameraRawImage.GetComponent<RectTransform>().sizeDelta = sizeDelta;
     }
 }
