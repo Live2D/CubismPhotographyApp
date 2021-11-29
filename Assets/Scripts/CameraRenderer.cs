@@ -178,7 +178,7 @@ public class CameraRenderer : MonoBehaviour
     }
 
     // 画面の回転に合わせて映像の大きさや角度を修正
-    void SetCameraRawImageProperty()
+    private void SetCameraRawImageProperty()
     {
         // カメラのサイズを設定
         var sizeDelta = CameraRawImage.rectTransform.sizeDelta;
