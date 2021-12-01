@@ -80,12 +80,12 @@ public class Live2DModelManager : MonoBehaviour
     #endregion
 
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
         // モデルがセットされていなかった場合
         if (!Model)
         {
-           Debug.LogError("[Live2DModelManager]: モデルがアタッチされていません");
+           Debug.LogError("[Live2DModelManager]: モデルが入力されていません");
            Application.Quit();
         }
 

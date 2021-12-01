@@ -139,7 +139,7 @@ public class CameraRenderer : MonoBehaviour
     // デバイス情報を更新
     public void Refresh()
     {
-        Debug.Log("デバイス情報を一新します");
+        Debug.Log("デバイス情報を更新します");
 
         // 条件に合うカメラを探す
         for (int i = 0; i < WebCamTexture.devices.Length; i++)
@@ -194,6 +194,7 @@ public class CameraRenderer : MonoBehaviour
                 {
                     case DeviceOrientation.FaceUp:
                     case DeviceOrientation.FaceDown:
+                    case DeviceOrientation.PortraitUpsideDown:
                         sizeDelta.x = Screen.height;
                         sizeDelta.y = Screen.width;
                         break;
@@ -209,6 +210,7 @@ public class CameraRenderer : MonoBehaviour
                 {
                     case DeviceOrientation.FaceUp:
                     case DeviceOrientation.FaceDown:
+                    case DeviceOrientation.Portrait:
                         sizeDelta.x = Screen.height;
                         sizeDelta.y = Screen.width;
                         break;
@@ -230,6 +232,7 @@ public class CameraRenderer : MonoBehaviour
                 {
                     case DeviceOrientation.FaceUp:
                     case DeviceOrientation.FaceDown:
+                    case DeviceOrientation.LandscapeRight:
                         sizeDelta.x = Screen.width;
                         sizeDelta.y = Screen.height;
                         break;
@@ -249,6 +252,7 @@ public class CameraRenderer : MonoBehaviour
                 {
                     case DeviceOrientation.FaceUp:
                     case DeviceOrientation.FaceDown:
+                    case DeviceOrientation.LandscapeLeft:
                         sizeDelta.x = Screen.width;
                         sizeDelta.y = Screen.height;
                         break;
