@@ -1,16 +1,24 @@
-﻿using System.Collections;
+﻿/**
+* Copyright(c) Live2D Inc. All rights reserved.
+*
+* Use of this source code is governed by the Live2D Open Software license
+* that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using Live2D.Cubism.Core;
+using Live2D.Cubism.Framework;
 using Live2D.Cubism.Framework.Raycasting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Live2DModelManager : MonoBehaviour
 {
-    [SerializeField, Tooltip("モデルのプレハブをアタッチする場所")]
+    [SerializeField, CustomLabel("Live2Dモデル"), Tooltip("モデルのプレハブをアタッチする場所")]
     public CubismModel Model;
 
-    [SerializeField, Tooltip("モデルの反転ボタン")]
+    [SerializeField, CustomLabel("モデルの反転ボタン"), Tooltip("モデルの反転ボタンをアタッチする場所")]
     public Button ModelInversionButton;
 
     #region 定数
@@ -77,6 +85,8 @@ public class Live2DModelManager : MonoBehaviour
     // モデルが左右反転しているか
     private bool _isModelInversion = false;
 
+    private AnimationClipSampler _sampler;
+
     #endregion
 
     // Start is called before the first frame update
@@ -95,12 +105,17 @@ public class Live2DModelManager : MonoBehaviour
         // モデルをシーンへ生成
         _modelObject = Instantiate(Model.gameObject, Vector3.zero, Quaternion.identity);
 
+        // コンポーネントをアタッチ
+        _sampler = _modelObject.AddComponent<AnimationClipSampler>();
+
         // 光線との衝突判定用コンポーネントを取得
         _modelRaycaster = _modelObject.GetComponent<CubismRaycaster>();
 
         // 衝突したアートメッシュの配列の初期化
         // 保存する個数は任意（今回は4つまで）
         _raycastHits = new CubismRaycastHit[4];
+
+        _modelObject.GetComponent<CubismUpdateController>().Refresh();
     }
 
     // Update is called once per frame
@@ -289,5 +304,15 @@ public class Live2DModelManager : MonoBehaviour
         ModelInversionButton.GetComponentInChildren<Text>().text = "反転 : OFF";
 
         Debug.Log("モデルの状態を初期化しました");
+    }
+
+    public void SetTimeRate(float timeRate)
+    {
+        if (_sampler == null)
+        {
+            return;
+        }
+
+        _sampler.SetTimeRate(timeRate);
     }
 }
