@@ -7,14 +7,19 @@ public class CameraRenderer : MonoBehaviour
     [SerializeField, Tooltip("カメラの画像を映すオブジェクト")]
     public RawImage CameraRawImage;
 
-    [SerializeField, Tooltip("端末を縦にしたときのカメラ映像の回転角度")]
-    public float CamPortraitAngle = -90.0f;
+    [SerializeField, Tooltip("端末を縦にしたときの外カメラ映像の回転角度")]
+    public float CamPortraitAngleOutCam = -90.0f;
 
-    [SerializeField, Tooltip("端末の上を左に向けたときのカメラ映像の回転角度")]
-    public float CamLandscapeNormalAngle = 0.0f;
+    [SerializeField, Tooltip("端末を縦にしたときの内カメラ映像の回転角度")]
+    public float CamPortraitAngleInCam = -90.0f;
 
-    [SerializeField, Tooltip("端末の上を右に向けたときのカメラ映像の回転角度")]
-    public float CamLandscapeInversionAngle = 180.0f;
+    [SerializeField, Tooltip("端末の外側のカメラ映像の回転角度")]
+    public float CamLandscapeAngleOutCam = 0.0f;
+
+    [SerializeField, Tooltip("端末の内側のカメラ映像の回転角度")]
+    public float CamLandscapeAngleInCam = 180.0f;
+
+    private static float _inversionAngle = 180.0f;
 
     private WebCamTexture _webCamTexture;
 
@@ -25,10 +30,10 @@ public class CameraRenderer : MonoBehaviour
     private int _selectCamera = 0;
 
     // 以前のディスプレイ向き
-    DeviceOrientation _previousDeviceOrientation;
+    private DeviceOrientation _previousDeviceOrientation;
 
     // 現在のディスプレイ向き
-    DeviceOrientation _currentDeviceOrientation;
+    private DeviceOrientation _currentDeviceOrientation;
 
     private void Start()
     {
@@ -189,7 +194,10 @@ public class CameraRenderer : MonoBehaviour
         {
             // 縦長
             case DeviceOrientation.Portrait:
-                angles.z = CamPortraitAngle;
+                angles.z = _webCamTexture.deviceName.Contains("Back")
+                    ? CamPortraitAngleOutCam
+                    : CamPortraitAngleInCam;
+
                 switch (_previousDeviceOrientation)
                 {
                     case DeviceOrientation.FaceUp:
@@ -205,7 +213,11 @@ public class CameraRenderer : MonoBehaviour
                 }
                 break;
             case DeviceOrientation.PortraitUpsideDown:
-                angles.z = -CamPortraitAngle;
+                angles.z = _webCamTexture.deviceName.Contains("Back")
+                    ? CamPortraitAngleOutCam
+                    : CamPortraitAngleInCam;
+                angles.z += _inversionAngle;
+
                 switch (_previousDeviceOrientation)
                 {
                     case DeviceOrientation.FaceUp:
@@ -224,8 +236,8 @@ public class CameraRenderer : MonoBehaviour
             //横長
             case DeviceOrientation.LandscapeLeft:
                 angles.z = _webCamTexture.deviceName.Contains("Back")
-                    ? CamLandscapeNormalAngle
-                    : CamLandscapeInversionAngle;
+                    ? CamLandscapeAngleOutCam
+                    : CamLandscapeAngleInCam;
 
                 // 以前のデバイスの状態から取得
                 switch (_previousDeviceOrientation)
@@ -244,8 +256,9 @@ public class CameraRenderer : MonoBehaviour
                 break;
             case DeviceOrientation.LandscapeRight:
                 angles.z = _webCamTexture.deviceName.Contains("Back")
-                    ? CamLandscapeInversionAngle
-                    : CamLandscapeNormalAngle;
+                    ? CamLandscapeAngleOutCam
+                    : CamLandscapeAngleInCam;
+                angles.z += _inversionAngle;
 
                 // 以前のデバイスの状態から取得
                 switch (_previousDeviceOrientation)
@@ -272,27 +285,37 @@ public class CameraRenderer : MonoBehaviour
                 {
                     // 縦長
                     case DeviceOrientation.Portrait:
-                        angles.z = CamPortraitAngle;
+                        angles.z = _webCamTexture.deviceName.Contains("Back")
+                            ? CamPortraitAngleOutCam
+                            : CamPortraitAngleInCam;
+
                         sizeDelta.x = Screen.height;
                         sizeDelta.y = Screen.width;
                         break;
                     case DeviceOrientation.PortraitUpsideDown:
-                        angles.z = -CamPortraitAngle;
+                        angles.z = _webCamTexture.deviceName.Contains("Back")
+                            ? CamPortraitAngleOutCam
+                            : CamPortraitAngleInCam;
+                        angles.z += _inversionAngle;
+
                         sizeDelta.x = Screen.height;
                         sizeDelta.y = Screen.width;
                         break;
                     //横長
                     case DeviceOrientation.LandscapeLeft:
                         angles.z = _webCamTexture.deviceName.Contains("Back")
-                            ? CamLandscapeNormalAngle
-                            : CamLandscapeInversionAngle;
+                            ? CamLandscapeAngleOutCam
+                            : CamLandscapeAngleInCam;
+
                         sizeDelta.x = Screen.width;
                         sizeDelta.y = Screen.height;
                         break;
                     case DeviceOrientation.LandscapeRight:
                         angles.z = _webCamTexture.deviceName.Contains("Back")
-                            ? CamLandscapeInversionAngle
-                            : CamLandscapeNormalAngle;
+                            ? CamLandscapeAngleOutCam
+                            : CamLandscapeAngleInCam;
+                        angles.z += _inversionAngle;
+
                         sizeDelta.x = Screen.width;
                         sizeDelta.y = Screen.height;
                         break;
