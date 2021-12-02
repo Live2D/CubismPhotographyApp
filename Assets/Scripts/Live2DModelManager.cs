@@ -21,6 +21,12 @@ public class Live2DModelManager : MonoBehaviour
     [SerializeField, CustomLabel("モデルの反転ボタン"), Tooltip("モデルの反転ボタンをアタッチする場所")]
     public Button ModelInversionButton;
 
+    [SerializeField, CustomLabel("モデルの固定化ボタン"), Tooltip("モデルの固定化ボタンをアタッチする場所")]
+    public Button ModelLockedButton;
+
+    [SerializeField, CustomLabel("モデルの最大スケール"), Tooltip("モデルの最大スケールを設定する場所")]
+    public float MaxScale = 5.0f;
+
     #region 定数
 
     // 処理の対象外とする2点間の距離
@@ -28,9 +34,6 @@ public class Live2DModelManager : MonoBehaviour
 
     // 最小拡大率
     private const float MinScale = 0.5f;
-
-    // 最大拡大率
-    private const float MaxScale = 2.0f;
 
     // 距離から拡大率を設定する際の変換率
     private const float DistanceToScaleRate = 200.0f;
@@ -85,6 +88,9 @@ public class Live2DModelManager : MonoBehaviour
     // モデルが左右反転しているか
     private bool _isModelInversion = false;
 
+    // モデルが固定状態か
+    private bool _isModelLocked = false;
+
     private AnimationClipSampler _sampler;
 
     #endregion
@@ -122,7 +128,7 @@ public class Live2DModelManager : MonoBehaviour
     private void Update()
     {
         // タッチの判定が無かった場合
-        if (Input.touchCount == 0)
+        if (Input.touchCount == 0 || _isModelLocked)
         {
             return;
         }
@@ -272,14 +278,7 @@ public class Live2DModelManager : MonoBehaviour
         var text = "";
 
         // 現在の状態に応じてテキストの内容を切り替える
-        if (_isModelInversion)
-        {
-            text = "反転 : ON";
-        }
-        else
-        {
-            text = "反転 : OFF";
-        }
+        text = _isModelInversion ? "反転 : ON" : "反転 : OFF";
 
         ModelInversionButton.GetComponentInChildren<Text>().text = text;
     }
@@ -304,6 +303,29 @@ public class Live2DModelManager : MonoBehaviour
         ModelInversionButton.GetComponentInChildren<Text>().text = "反転 : OFF";
 
         Debug.Log("モデルの状態を初期化しました");
+    }
+
+    // モデルの状態を固定する
+    public void ModelTransformLock()
+    {
+        // 機能を切り替える
+        _isModelLocked = !_isModelLocked;
+
+        var text = "";
+
+        // 現在の状態に応じてテキストの内容を切り替える
+        if (_isModelLocked)
+        {
+            text = "固定 : ON";
+            Debug.Log("モデルを固定化しました");
+        }
+        else
+        {
+            text = "固定 : OFF";
+            Debug.Log("モデルの固定化を解除しました");
+        }
+
+        ModelLockedButton.GetComponentInChildren<Text>().text = text;
     }
 
     public void SetTimeRate(float timeRate)
