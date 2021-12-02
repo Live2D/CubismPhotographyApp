@@ -18,7 +18,7 @@ public class UIManager : MonoBehaviour
     [SerializeField, CustomLabel("メニュー切り替えボタン"), Tooltip("UIのメニューを切り替えるボタン")]
     public Button MenuSwitchButton;
 
-    [SerializeField, CustomLabel("メニュー切り替え用のオブジェクトの配列"), Tooltip("メニュー切り替え用空のオブジェクトの配列")]
+    [SerializeField, CustomLabel("メニュー切り替え用のオブジェクト"), Tooltip("メニュー切り替え用空のオブジェクト")]
     public GameObject[] MenuObjects;
 
     // UIは透明の状態か
