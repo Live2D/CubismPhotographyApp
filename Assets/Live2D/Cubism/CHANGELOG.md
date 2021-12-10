@@ -4,22 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [4-r.4] - 2021-11-04
+## [4-r.4] - 2021-12-09
 
 ### Added
 
 * Add the function to set assets to a component when importing a model.
+* Add Chrome OS from the tested environment.
 
 ### Changed
 
 * Change the version of the development project to `2019.4.29f1`.
 * Change `Enable Async` in `AsyncBenchmark` scene to be disabled by default.
 * Change the sample scene in `Samples/OW/Expression` so that the expressions are displayed in the order of the elements in `expressionList.asset`.
+* Change `UserData` that it can be edited from Inspector.
+* Change multiple `UserData` can be edited in bulk from the inspector.
 
 ### Fixed
 
 * Fix an issue with duplicate elements in the Expression List.
 * Fix the elements of `expressionList.asset` to be empty when importing in Unity 2021 and 2020.
+* Fix to keep `Layer` at reimport.
+* Fix `CubismMotionController` do not be removed at reimport.
 
 ### Removed
 
