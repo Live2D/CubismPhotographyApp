@@ -11,10 +11,10 @@ using UnityEngine;
 
 public class AnimationClipSampler : MonoBehaviour, ICubismUpdatable
 {
-    [SerializeField, CustomLabel("Live2Dアニメーション"), Tooltip("任意のLive2D Motionのアニメーションクリップ")]
+    [SerializeField, OptionalLabel("Live2Dアニメーション"), Tooltip("任意のLive2D Motionのアニメーションクリップ")]
     public AnimationClip AnimationClip;
 
-    [SerializeField, Range(0.0f, 1.0f), CustomLabel("アニメーションの時間"), Tooltip("適用するモーションの時間割合")]
+    [SerializeField, Range(0.0f, 1.0f), OptionalLabel("アニメーションの時間"), Tooltip("適用するモーションの時間割合")]
     public float AnimationTimeRate;
 
     // モデル

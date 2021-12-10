@@ -7,13 +7,13 @@
 
 using UnityEngine;
 
-public class CustomLabelAttribute : PropertyAttribute
+public class OptionalLabelAttribute : PropertyAttribute
 {
     // 読み取り専用に設定
     public readonly string Value;
 
     // ラベルの変更
-    public CustomLabelAttribute(string value)
+    public OptionalLabelAttribute(string value)
     {
         Value = value;
     }

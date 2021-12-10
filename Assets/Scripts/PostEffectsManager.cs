@@ -13,33 +13,33 @@ using UnityEngine.UI;
 
 public class PostEffectsManager : MonoBehaviour
 {
-    [SerializeField, CustomLabel("Bloomのスライダー"), Tooltip("Bloomの強さを切り替えるスライダー")]
+    [SerializeField, OptionalLabel("Bloomのスライダー"), Tooltip("Bloomの強さを切り替えるスライダー")]
     public Slider BloomSlider;
 
-    [SerializeField, CustomLabel("ChromaticAberrationのスライダー"), Tooltip("ChromaticAberrationの強さを切り替えるスライダー")]
+    [SerializeField, OptionalLabel("ChromaticAberrationのスライダー"), Tooltip("ChromaticAberrationの強さを切り替えるスライダー")]
     public Slider ChromaticAberrationSlider;
 
-    [SerializeField, CustomLabel("LensDistortionのスライダー"), Tooltip("LensDistortionの強さを切り替えるスライダー")]
+    [SerializeField, OptionalLabel("LensDistortionのスライダー"), Tooltip("LensDistortionの強さを切り替えるスライダー")]
     public Slider LensDistortionSlider;
 
-    [SerializeField, CustomLabel("Vignetteのスライダー"), Tooltip("Vignetteの強さを切り替えるスライダー")]
+    [SerializeField, OptionalLabel("Vignetteのスライダー"), Tooltip("Vignetteの強さを切り替えるスライダー")]
     public Slider VignetteSlider;
 
     #region 色調補正のスライダー
 
-    [SerializeField, CustomLabel("色相のスライダー"), Tooltip("色相を変化させるためのスライダー")]
+    [SerializeField, OptionalLabel("色相のスライダー"), Tooltip("色相を変化させるためのスライダー")]
     public Slider HueSlider;
 
-    [SerializeField, CustomLabel("彩度のスライダー"), Tooltip("彩度を変化させるためのスライダー")]
+    [SerializeField, OptionalLabel("彩度のスライダー"), Tooltip("彩度を変化させるためのスライダー")]
     public Slider SaturationSlider;
 
-    [SerializeField, CustomLabel("輝度のスライダー"), Tooltip("輝度を変化させるためのスライダー")]
+    [SerializeField, OptionalLabel("輝度のスライダー"), Tooltip("輝度を変化させるためのスライダー")]
     public Slider BrightnessSlider;
 
-    [SerializeField, CustomLabel("コントラストのスライダー"), Tooltip("コントラストを変化させるためのスライダー")]
+    [SerializeField, OptionalLabel("コントラストのスライダー"), Tooltip("コントラストを変化させるためのスライダー")]
     public Slider ContrastSlider;
 
-    [SerializeField, CustomLabel("チャンネルミキサーのスライダー"), Tooltip("赤、緑、青の順になるように")]
+    [SerializeField, OptionalLabel("チャンネルミキサーのスライダー"), Tooltip("赤、緑、青の順になるように")]
     public Slider[] ChannelMixerSliders;
 
     #endregion

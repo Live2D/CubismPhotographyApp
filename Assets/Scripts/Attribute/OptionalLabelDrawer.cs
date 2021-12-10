@@ -8,16 +8,16 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(CustomLabelAttribute))]
-public class CustomLabelDrawer : PropertyDrawer
+[CustomPropertyDrawer(typeof(OptionalLabelAttribute))]
+public class OptionalLabelDrawer : PropertyDrawer
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
     {
         // 新規にラベルを設定
-        var customLabel = attribute as CustomLabelAttribute;
+        var optionalLabel = attribute as OptionalLabelAttribute;
 
         // インスペクタへ反映
-        EditorGUI.PropertyField(position, property, new GUIContent(customLabel.Value), true);
+        EditorGUI.PropertyField(rect, property, new GUIContent(optionalLabel.Value), true);
     }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)

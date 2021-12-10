@@ -15,16 +15,16 @@ using UnityEngine.UI;
 
 public class Live2DModelManager : MonoBehaviour
 {
-    [SerializeField, CustomLabel("Live2Dモデル"), Tooltip("モデルのプレハブをアタッチする場所")]
+    [SerializeField, OptionalLabel("Live2Dモデル"), Tooltip("モデルのプレハブをアタッチする場所")]
     public CubismModel Model;
 
-    [SerializeField, CustomLabel("モデルの反転ボタン"), Tooltip("モデルの反転ボタンをアタッチする場所")]
+    [SerializeField, OptionalLabel("モデルの反転ボタン"), Tooltip("モデルの反転ボタンをアタッチする場所")]
     public Button ModelInversionButton;
 
-    [SerializeField, CustomLabel("モデルの固定化ボタン"), Tooltip("モデルの固定化ボタンをアタッチする場所")]
+    [SerializeField, OptionalLabel("モデルの固定化ボタン"), Tooltip("モデルの固定化ボタンをアタッチする場所")]
     public Button ModelLockedButton;
 
-    [SerializeField, CustomLabel("モデルの最大スケール"), Tooltip("モデルの最大スケールを設定する場所")]
+    [SerializeField, OptionalLabel("モデルの最大スケール"), Tooltip("モデルの最大スケールを設定する場所")]
     public float MaxScale = 5.0f;
 
     #region 定数

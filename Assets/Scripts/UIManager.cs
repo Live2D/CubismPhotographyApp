@@ -12,13 +12,13 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField, CustomLabel("UI透明化ボタン"), Tooltip("UIの表示非表示を切り替えるボタン")]
+    [SerializeField, OptionalLabel("UI透明化ボタン"), Tooltip("UIの表示非表示を切り替えるボタン")]
     public Button UiTransparency;
 
-    [SerializeField, CustomLabel("メニュー切り替えボタン"), Tooltip("UIのメニューを切り替えるボタン")]
+    [SerializeField, OptionalLabel("メニュー切り替えボタン"), Tooltip("UIのメニューを切り替えるボタン")]
     public Button MenuSwitchButton;
 
-    [SerializeField, CustomLabel("メニュー切り替え用のオブジェクト"), Tooltip("メニュー切り替え用空のオブジェクト")]
+    [SerializeField, OptionalLabel("メニュー切り替え用のオブジェクト"), Tooltip("メニュー切り替え用空のオブジェクト")]
     public GameObject[] MenuObjects;
 
     // UIは透明の状態か
