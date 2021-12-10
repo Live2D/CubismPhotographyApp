@@ -1,25 +1,32 @@
-﻿using System.Collections.Generic;
+﻿/**
+* Copyright(c) Live2D Inc. All rights reserved.
+*
+* Use of this source code is governed by the Live2D Open Software license
+* that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
+*/
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CameraRenderer : MonoBehaviour
 {
-    [SerializeField, Tooltip("カメラの画像を映すオブジェクト")]
+    [SerializeField, OptionalLabel("カメラ映像スクリーン"), Tooltip("カメラの画像を映すオブジェクト")]
     public RawImage CameraRawImage;
 
-    [SerializeField, Tooltip("端末を縦にしたときの外カメラ映像の回転角度")]
+    [SerializeField, OptionalLabel("外カメラ角度（縦）"), Tooltip("端末を縦にしたときの外カメラ映像の回転角度")]
     public float CamPortraitAngleOutCam = -90.0f;
 
-    [SerializeField, Tooltip("端末を縦にしたときの内カメラ映像の回転角度")]
+    [SerializeField, OptionalLabel("内カメラ角度（縦）"), Tooltip("端末を縦にしたときの内カメラ映像の回転角度")]
     public float CamPortraitAngleInCam = -90.0f;
 
-    [SerializeField, Tooltip("端末の外側のカメラ映像の回転角度")]
+    [SerializeField, OptionalLabel("外カメラ角度（横）"), Tooltip("端末の外側のカメラ映像の回転角度")]
     public float CamLandscapeAngleOutCam = 0.0f;
 
-    [SerializeField, Tooltip("端末の内側のカメラ映像の回転角度")]
+    [SerializeField, OptionalLabel("内カメラ角度（横）"), Tooltip("端末の内側のカメラ映像の回転角度")]
     public float CamLandscapeAngleInCam = 180.0f;
 
-    [SerializeField, Tooltip("判定用のカメラ名。iOSは「Back」、Androidは「1」に設定（鍵括弧は要りません）")]
+    [SerializeField, OptionalLabel("判定用のカメラ名"), Tooltip("iOSは「Back」、Androidは「1」に設定（鍵括弧は要りません）")]
     public string JudgeCamName = "Back";
 
     // 映像反転用定数

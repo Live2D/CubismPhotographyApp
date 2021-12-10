@@ -1,17 +1,24 @@
-﻿using System.Collections;
+﻿/**
+* Copyright(c) Live2D Inc. All rights reserved.
+*
+* Use of this source code is governed by the Live2D Open Software license
+* that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField,Tooltip("UIの表示非表示を切り替えるボタン")]
+    [SerializeField, OptionalLabel("UI透明化ボタン"), Tooltip("UIの表示非表示を切り替えるボタン")]
     public Button UiTransparency;
 
-    [SerializeField, Tooltip("UIのメニューを切り替えるボタン")]
+    [SerializeField, OptionalLabel("メニュー切り替えボタン"), Tooltip("UIのメニューを切り替えるボタン")]
     public Button MenuSwitchButton;
 
-    [SerializeField, Tooltip("メニュー切り替え用空のオブジェクトの配列")]
+    [SerializeField, OptionalLabel("メニュー切り替え用のオブジェクト"), Tooltip("メニュー切り替え用空のオブジェクト")]
     public GameObject[] MenuObjects;
 
     // UIは透明の状態か

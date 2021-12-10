@@ -1,17 +1,31 @@
-﻿using System.Collections;
+﻿/**
+* Copyright(c) Live2D Inc. All rights reserved.
+*
+* Use of this source code is governed by the Live2D Open Software license
+* that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using Live2D.Cubism.Core;
+using Live2D.Cubism.Framework;
 using Live2D.Cubism.Framework.Raycasting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Live2DModelManager : MonoBehaviour
 {
-    [SerializeField, Tooltip("モデルのプレハブをアタッチする場所")]
+    [SerializeField, OptionalLabel("Live2Dモデル"), Tooltip("モデルのプレハブをアタッチする場所")]
     public CubismModel Model;
 
-    [SerializeField, Tooltip("モデルの反転ボタン")]
+    [SerializeField, OptionalLabel("モデルの反転ボタン"), Tooltip("モデルの反転ボタンをアタッチする場所")]
     public Button ModelInversionButton;
+
+    [SerializeField, OptionalLabel("モデルの固定化ボタン"), Tooltip("モデルの固定化ボタンをアタッチする場所")]
+    public Button ModelLockedButton;
+
+    [SerializeField, OptionalLabel("モデルの最大スケール"), Tooltip("モデルの最大スケールを設定する場所")]
+    public float MaxScale = 5.0f;
 
     #region 定数
 
@@ -20,9 +34,6 @@ public class Live2DModelManager : MonoBehaviour
 
     // 最小拡大率
     private const float MinScale = 0.5f;
-
-    // 最大拡大率
-    private const float MaxScale = 2.0f;
 
     // 距離から拡大率を設定する際の変換率
     private const float DistanceToScaleRate = 200.0f;
@@ -77,6 +88,11 @@ public class Live2DModelManager : MonoBehaviour
     // モデルが左右反転しているか
     private bool _isModelInversion = false;
 
+    // モデルが固定状態か
+    private bool _isModelLocked = false;
+
+    private AnimationClipSampler _sampler;
+
     #endregion
 
     // Start is called before the first frame update
@@ -95,19 +111,24 @@ public class Live2DModelManager : MonoBehaviour
         // モデルをシーンへ生成
         _modelObject = Instantiate(Model.gameObject, Vector3.zero, Quaternion.identity);
 
+        // コンポーネントをアタッチ
+        _sampler = _modelObject.AddComponent<AnimationClipSampler>();
+
         // 光線との衝突判定用コンポーネントを取得
         _modelRaycaster = _modelObject.GetComponent<CubismRaycaster>();
 
         // 衝突したアートメッシュの配列の初期化
         // 保存する個数は任意（今回は4つまで）
         _raycastHits = new CubismRaycastHit[4];
+
+        _modelObject.GetComponent<CubismUpdateController>().Refresh();
     }
 
     // Update is called once per frame
     private void Update()
     {
         // タッチの判定が無かった場合
-        if (Input.touchCount == 0)
+        if (Input.touchCount == 0 || _isModelLocked)
         {
             return;
         }
@@ -257,14 +278,7 @@ public class Live2DModelManager : MonoBehaviour
         var text = "";
 
         // 現在の状態に応じてテキストの内容を切り替える
-        if (_isModelInversion)
-        {
-            text = "反転 : ON";
-        }
-        else
-        {
-            text = "反転 : OFF";
-        }
+        text = _isModelInversion ? "反転 : ON" : "反転 : OFF";
 
         ModelInversionButton.GetComponentInChildren<Text>().text = text;
     }
@@ -289,5 +303,38 @@ public class Live2DModelManager : MonoBehaviour
         ModelInversionButton.GetComponentInChildren<Text>().text = "反転 : OFF";
 
         Debug.Log("モデルの状態を初期化しました");
+    }
+
+    // モデルの状態を固定する
+    public void ModelTransformLock()
+    {
+        // 機能を切り替える
+        _isModelLocked = !_isModelLocked;
+
+        var text = "";
+
+        // 現在の状態に応じてテキストの内容を切り替える
+        if (_isModelLocked)
+        {
+            text = "固定 : ON";
+            Debug.Log("モデルを固定化しました");
+        }
+        else
+        {
+            text = "固定 : OFF";
+            Debug.Log("モデルの固定化を解除しました");
+        }
+
+        ModelLockedButton.GetComponentInChildren<Text>().text = text;
+    }
+
+    public void SetTimeRate(float timeRate)
+    {
+        if (_sampler == null)
+        {
+            return;
+        }
+
+        _sampler.SetTimeRate(timeRate);
     }
 }
