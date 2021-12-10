@@ -95,6 +95,7 @@ public class PostEffectsManager : MonoBehaviour
 
         if (_postProcessVolume == null)
         {
+            Debug.Log("PostProcessVolumeが適用されていません");
             return;
         }
 
@@ -128,30 +129,50 @@ public class PostEffectsManager : MonoBehaviour
     // ブルームの強さを設定
     public void SetBloomIntensity(float intensity)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _bloom.intensity.value = intensity;
     }
 
     // 色収差の強さを設定
     public void SetChromaticAberrationIntensity(float intensity)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _chromaticAberration.intensity.value = intensity;
     }
 
     // レンズ効果の強さを設定
     public void SetLensDistortionIntensity(float intensity)
     {
-       _lensDistortion.intensity.value = intensity;
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
+        _lensDistortion.intensity.value = intensity;
     }
 
     // ビネットの強さを設定
     public void SetVignetteIntensity(float intensity)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _vignette.intensity.value = intensity;
     }
 
     // ポストエフェクトの設定をリセット
     public void ResetPostEffects()
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         // ブルーム
         BloomSlider.value = _bloom.intensity.value = _storeBloom;
 
@@ -178,36 +199,64 @@ public class PostEffectsManager : MonoBehaviour
 
     public void SetHue(float value)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _colorGrading.hueShift.value = value;
     }
 
     public void SetSaturation(float value)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _colorGrading.saturation.value = value;
     }
 
     public void SetBrightness(float value)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _colorGrading.brightness.value = value;
     }
 
     public void SetContrast(float value)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _colorGrading.contrast.value = value;
     }
 
     public void SetChannelMixerRed(float value)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _colorGrading.mixerRedOutRedIn.value = value;
     }
 
     public void SetChannelMixerGreen(float value)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _colorGrading.mixerGreenOutGreenIn.value = value;
     }
 
     public void SetChannelMixerBlue(float value)
     {
+        if (_postProcessVolume == null)
+        {
+            return;
+        }
         _colorGrading.mixerBlueOutBlueIn.value = value;
     }
 }

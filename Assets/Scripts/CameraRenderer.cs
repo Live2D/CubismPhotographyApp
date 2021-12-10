@@ -29,6 +29,9 @@ public class CameraRenderer : MonoBehaviour
     [SerializeField, OptionalLabel("判定用のカメラ名"), Tooltip("iOSは「Back」、Androidは「1」に設定（鍵括弧は要りません）")]
     public string JudgeCamName = "Back";
 
+    [SerializeField, OptionalLabel("デバイスの向きのログの有無"), Tooltip("デバイスの向きのログを出すかどうか")]
+    public bool enableDeviceOrientation = false;
+
     // 映像反転用定数
     private static float _inversionAngle = 180.0f;
 
@@ -40,18 +43,27 @@ public class CameraRenderer : MonoBehaviour
     //現在選択しているカメラ
     private int _selectCamera = 0;
 
-    // 以前のディスプレイ向き
+    // 二つ前のディスプレイの向き
+    private DeviceOrientation _twicePreviousDeviceOrientation;
+
+    // 以前のディスプレイの向き
     private DeviceOrientation _previousDeviceOrientation;
 
-    // 現在のディスプレイ向き
+    // 現在のディスプレイの向き
     private DeviceOrientation _currentDeviceOrientation;
 
     private void Start()
     {
         Application.RequestUserAuthorization(UserAuthorization.WebCam);
         _webCamTexture = new WebCamTexture();
-        CameraRawImage.texture = _webCamTexture;
+
+        if (CameraRawImage != null)
+        {
+            CameraRawImage.texture = _webCamTexture;
+        }
+
         _webCamDevices = new List<WebCamDevice>();
+        _previousDeviceOrientation = _twicePreviousDeviceOrientation = DeviceOrientation.Unknown;
     }
 
     // 端末の向きを取得する
@@ -87,8 +99,16 @@ public class CameraRenderer : MonoBehaviour
         }
 
         // 現在の状態を保存
+        _twicePreviousDeviceOrientation = _previousDeviceOrientation != _currentDeviceOrientation ? _previousDeviceOrientation : DeviceOrientation.Unknown;
         _previousDeviceOrientation = _currentDeviceOrientation;
         _currentDeviceOrientation = deviceOrientation;
+
+        if (enableDeviceOrientation)
+        {
+            Debug.Log($"Twice:{_twicePreviousDeviceOrientation}");
+            Debug.Log($"Previous:{_previousDeviceOrientation}");
+            Debug.Log($"Current:{_currentDeviceOrientation}");
+        }
 
         // 画面の回転に合わせて映像の大きさや角度を修正
         SetCameraRawImageProperty();
@@ -182,6 +202,12 @@ public class CameraRenderer : MonoBehaviour
             _webCamTexture = new WebCamTexture(_webCamDevices[0].name);
             Debug.Log($"現在のカメラ: {_webCamDevices[0].name}");
 
+            if (CameraRawImage == null)
+            {
+                Debug.Log("カメラ映像を映すオブジェクトが適用されていません");
+                return;
+            }
+
             //カメラの映像をテクスチャへ反映
             CameraRawImage.texture = _webCamTexture;
 
@@ -196,6 +222,12 @@ public class CameraRenderer : MonoBehaviour
     // 画面の回転に合わせて映像の大きさや角度を修正
     private void SetCameraRawImageProperty()
     {
+        if (CameraRawImage == null)
+        {
+            Debug.Log("カメラ映像を映すオブジェクトが適用されていません");
+            return;
+        }
+
         // カメラのサイズを設定
         var sizeDelta = CameraRawImage.rectTransform.sizeDelta;
         var angles = CameraRawImage.rectTransform.eulerAngles;
@@ -213,6 +245,20 @@ public class CameraRenderer : MonoBehaviour
                 {
                     case DeviceOrientation.FaceUp:
                     case DeviceOrientation.FaceDown:
+                        switch (_twicePreviousDeviceOrientation)
+                        {
+                            case DeviceOrientation.LandscapeLeft:
+                            case DeviceOrientation.LandscapeRight:
+                                sizeDelta.x = Screen.width;
+                                sizeDelta.y = Screen.height;
+                                break;
+                            default:
+                                sizeDelta.x = Screen.height;
+                                sizeDelta.y = Screen.width;
+                                break;
+                        }
+
+                        break;
                     case DeviceOrientation.PortraitUpsideDown:
                         sizeDelta.x = Screen.height;
                         sizeDelta.y = Screen.width;
@@ -222,6 +268,7 @@ public class CameraRenderer : MonoBehaviour
                         sizeDelta.y = Screen.height;
                         break;
                 }
+
                 break;
             case DeviceOrientation.PortraitUpsideDown:
                 angles.z = _webCamTexture.deviceName.Contains(JudgeCamName)
@@ -233,6 +280,19 @@ public class CameraRenderer : MonoBehaviour
                 {
                     case DeviceOrientation.FaceUp:
                     case DeviceOrientation.FaceDown:
+                        switch (_twicePreviousDeviceOrientation)
+                        {
+                            case DeviceOrientation.LandscapeLeft:
+                            case DeviceOrientation.LandscapeRight:
+                                sizeDelta.x = Screen.width;
+                                sizeDelta.y = Screen.height;
+                                break;
+                            default:
+                                sizeDelta.x = Screen.height;
+                                sizeDelta.y = Screen.width;
+                                break;
+                        }
+                        break;
                     case DeviceOrientation.Portrait:
                         sizeDelta.x = Screen.height;
                         sizeDelta.y = Screen.width;
@@ -255,6 +315,19 @@ public class CameraRenderer : MonoBehaviour
                 {
                     case DeviceOrientation.FaceUp:
                     case DeviceOrientation.FaceDown:
+                        switch (_twicePreviousDeviceOrientation)
+                        {
+                            case DeviceOrientation.Portrait:
+                            case DeviceOrientation.PortraitUpsideDown:
+                                sizeDelta.x = Screen.height;
+                                sizeDelta.y = Screen.width;
+                                break;
+                            default:
+                                sizeDelta.x = Screen.width;
+                                sizeDelta.y = Screen.height;
+                                break;
+                        }
+                        break;
                     case DeviceOrientation.LandscapeRight:
                         sizeDelta.x = Screen.width;
                         sizeDelta.y = Screen.height;
@@ -276,6 +349,19 @@ public class CameraRenderer : MonoBehaviour
                 {
                     case DeviceOrientation.FaceUp:
                     case DeviceOrientation.FaceDown:
+                        switch (_twicePreviousDeviceOrientation)
+                        {
+                            case DeviceOrientation.Portrait:
+                            case DeviceOrientation.PortraitUpsideDown:
+                                sizeDelta.x = Screen.height;
+                                sizeDelta.y = Screen.width;
+                                break;
+                            default:
+                                sizeDelta.x = Screen.width;
+                                sizeDelta.y = Screen.height;
+                                break;
+                        }
+                        break;
                     case DeviceOrientation.LandscapeLeft:
                         sizeDelta.x = Screen.width;
                         sizeDelta.y = Screen.height;
@@ -300,8 +386,16 @@ public class CameraRenderer : MonoBehaviour
                             ? CamPortraitAngleOutCam
                             : CamPortraitAngleInCam;
 
-                        sizeDelta.x = Screen.height;
-                        sizeDelta.y = Screen.width;
+                        if (_twicePreviousDeviceOrientation == DeviceOrientation.Unknown)
+                        {
+                            sizeDelta.x = Screen.width;
+                            sizeDelta.y = Screen.height;
+                        }
+                        else
+                        {
+                            sizeDelta.x = Screen.height;
+                            sizeDelta.y = Screen.width;
+                        }
                         break;
                     case DeviceOrientation.PortraitUpsideDown:
                         angles.z = _webCamTexture.deviceName.Contains(JudgeCamName)
@@ -309,8 +403,16 @@ public class CameraRenderer : MonoBehaviour
                             : CamPortraitAngleInCam;
                         angles.z += _inversionAngle;
 
-                        sizeDelta.x = Screen.height;
-                        sizeDelta.y = Screen.width;
+                        if (_twicePreviousDeviceOrientation == DeviceOrientation.Unknown)
+                        {
+                            sizeDelta.x = Screen.width;
+                            sizeDelta.y = Screen.height;
+                        }
+                        else
+                        {
+                            sizeDelta.x = Screen.height;
+                            sizeDelta.y = Screen.width;
+                        }
                         break;
                     //横長
                     case DeviceOrientation.LandscapeLeft:
@@ -318,8 +420,16 @@ public class CameraRenderer : MonoBehaviour
                             ? CamLandscapeAngleOutCam
                             : CamLandscapeAngleInCam;
 
-                        sizeDelta.x = Screen.width;
-                        sizeDelta.y = Screen.height;
+                        if (_twicePreviousDeviceOrientation == DeviceOrientation.Unknown)
+                        {
+                            sizeDelta.x = Screen.height;
+                            sizeDelta.y = Screen.width;
+                        }
+                        else
+                        {
+                            sizeDelta.x = Screen.width;
+                            sizeDelta.y = Screen.height;
+                        }
                         break;
                     case DeviceOrientation.LandscapeRight:
                         angles.z = _webCamTexture.deviceName.Contains(JudgeCamName)
@@ -327,8 +437,35 @@ public class CameraRenderer : MonoBehaviour
                             : CamLandscapeAngleInCam;
                         angles.z += _inversionAngle;
 
-                        sizeDelta.x = Screen.width;
-                        sizeDelta.y = Screen.height;
+                        if (_twicePreviousDeviceOrientation == DeviceOrientation.Unknown)
+                        {
+                            sizeDelta.x = Screen.height;
+                            sizeDelta.y = Screen.width;
+                        }
+                        else
+                        {
+                            sizeDelta.x = Screen.width;
+                            sizeDelta.y = Screen.height;
+                        }
+                        break;
+                    default:
+                        if (Screen.width < Screen.height)
+                        {
+                            angles.z = _webCamTexture.deviceName.Contains(JudgeCamName)
+                                ? CamPortraitAngleOutCam
+                                : CamPortraitAngleInCam;
+                            sizeDelta.x = Screen.height;
+                            sizeDelta.y = Screen.width;
+                        }
+                        else
+                        {
+                            angles.z = _webCamTexture.deviceName.Contains(JudgeCamName)
+                                ? CamLandscapeAngleOutCam
+                                : CamLandscapeAngleInCam;
+                            sizeDelta.x = Screen.width;
+                            sizeDelta.y = Screen.height;
+                        }
+                        _previousDeviceOrientation = _currentDeviceOrientation;
                         break;
                 }
                 break;
