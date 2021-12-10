@@ -35,6 +35,11 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        if (UiTransparency == null)
+        {
+            return;
+        }
+
         // 各デフォルト値を取得
         _defaultButtonColors = UiTransparency.colors;
         _defaultTextColor = UiTransparency.GetComponentInChildren<Text>().color;
@@ -51,6 +56,11 @@ public class UIManager : MonoBehaviour
     // UIの可視・不可視の切り替え
     public void SwitchTransparency()
     {
+        if (UiTransparency == null)
+        {
+            return;
+        }
+
         // コンポーネント取得
         var colors = UiTransparency.colors;
         var textColor = UiTransparency.GetComponentInChildren<Text>();
@@ -102,6 +112,11 @@ public class UIManager : MonoBehaviour
     // メニューの切り替え
     public void MenuSwitch()
     {
+        if (MenuSwitchButton == null)
+        {
+            return;
+        }
+
         // _activeMenuIndex + 1の値が配列の長さ以上になるなら配列の最初に戻す
         _activeMenuIndex = _activeMenuIndex + 1 >= MenuObjects.Length ? 0 : _activeMenuIndex + 1;
 
