@@ -93,7 +93,7 @@ public class PostEffectsManager : MonoBehaviour
     {
         _postProcessVolume = GetComponent<PostProcessVolume>();
 
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             Debug.Log("PostProcessVolumeが適用されていません");
             return;
@@ -129,7 +129,7 @@ public class PostEffectsManager : MonoBehaviour
     // ブルームの強さを設定
     public void SetBloomIntensity(float intensity)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -139,7 +139,7 @@ public class PostEffectsManager : MonoBehaviour
     // 色収差の強さを設定
     public void SetChromaticAberrationIntensity(float intensity)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -149,7 +149,7 @@ public class PostEffectsManager : MonoBehaviour
     // レンズ効果の強さを設定
     public void SetLensDistortionIntensity(float intensity)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -159,7 +159,7 @@ public class PostEffectsManager : MonoBehaviour
     // ビネットの強さを設定
     public void SetVignetteIntensity(float intensity)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -169,7 +169,7 @@ public class PostEffectsManager : MonoBehaviour
     // ポストエフェクトの設定をリセット
     public void ResetPostEffects()
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -199,7 +199,7 @@ public class PostEffectsManager : MonoBehaviour
 
     public void SetHue(float value)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -208,7 +208,7 @@ public class PostEffectsManager : MonoBehaviour
 
     public void SetSaturation(float value)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -217,7 +217,7 @@ public class PostEffectsManager : MonoBehaviour
 
     public void SetBrightness(float value)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -226,7 +226,7 @@ public class PostEffectsManager : MonoBehaviour
 
     public void SetContrast(float value)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -235,7 +235,7 @@ public class PostEffectsManager : MonoBehaviour
 
     public void SetChannelMixerRed(float value)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -244,7 +244,7 @@ public class PostEffectsManager : MonoBehaviour
 
     public void SetChannelMixerGreen(float value)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
@@ -253,7 +253,7 @@ public class PostEffectsManager : MonoBehaviour
 
     public void SetChannelMixerBlue(float value)
     {
-        if (_postProcessVolume == null)
+        if (!_postProcessVolume.isActiveAndEnabled)
         {
             return;
         }
