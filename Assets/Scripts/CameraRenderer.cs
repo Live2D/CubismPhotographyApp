@@ -29,8 +29,8 @@ public class CameraRenderer : MonoBehaviour
     [SerializeField, OptionalLabel("判定用のカメラ名"), Tooltip("iOSは「Back」、Androidは「1」に設定（鍵括弧は要りません）")]
     public string JudgeCamName = "Back";
 
-    [SerializeField, OptionalLabel("デバイスの向きのログの有無"), Tooltip("デバイスの向きのログを出すかどうか")]
-    public bool enableDeviceOrientation = false;
+    [SerializeField, OptionalLabel("Debugログの有無"), Tooltip("出力頻度の高いDebug用のログを出すかどうか")]
+    public bool enableDebugLog = false;
 
     // 映像反転用定数
     private static float _inversionAngle = 180.0f;
@@ -103,7 +103,7 @@ public class CameraRenderer : MonoBehaviour
         _previousDeviceOrientation = _currentDeviceOrientation;
         _currentDeviceOrientation = deviceOrientation;
 
-        if (enableDeviceOrientation)
+        if (enableDebugLog)
         {
             Debug.Log($"Twice:{_twicePreviousDeviceOrientation}");
             Debug.Log($"Previous:{_previousDeviceOrientation}");
@@ -180,6 +180,11 @@ public class CameraRenderer : MonoBehaviour
         // 条件に合うカメラを探す
         for (int i = 0; i < WebCamTexture.devices.Length; i++)
         {
+            if (enableDebugLog)
+            {
+                Debug.Log($"デバイス名: {WebCamTexture.devices[i].name}");
+            }
+
             // 条件
             if (WebCamTexture.devices[i].name.Contains("Remote") && !_webCamDevices.Contains(WebCamTexture.devices[i]))
             {
