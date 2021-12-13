@@ -2124,7 +2124,7 @@ MonoBehaviour:
   CamLandscapeAngleOutCam: 0
   CamLandscapeAngleInCam: 180
   JudgeCamName: Back
-  enableDeviceOrientation: 0
+  enableDebugLog: 0
 --- !u!114 &566039333
 MonoBehaviour:
   m_ObjectHideFlags: 0
