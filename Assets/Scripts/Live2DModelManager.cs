@@ -102,7 +102,7 @@ public class Live2DModelManager : MonoBehaviour
         if (!Model)
         {
            Debug.LogError("[Live2DModelManager]: モデルが入力されていません");
-           Application.Quit();
+           return;
         }
 
         // カメラへの参照を取得
