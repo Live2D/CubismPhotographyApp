@@ -99,7 +99,7 @@ public class Live2DModelManager : MonoBehaviour
     private void Awake()
     {
         // モデルがセットされていなかった場合
-        if (!Model)
+        if (Model == null)
         {
            Debug.LogError("[Live2DModelManager]: モデルが入力されていません");
            return;
@@ -128,7 +128,7 @@ public class Live2DModelManager : MonoBehaviour
     private void Update()
     {
         // タッチの判定が無かった場合
-        if (Input.touchCount == 0 || _isModelLocked)
+        if (Input.touchCount == 0 || _isModelLocked || Model == null)
         {
             return;
         }
@@ -263,6 +263,11 @@ public class Live2DModelManager : MonoBehaviour
     // ボタンを押したら左右反転機能切り替え
     public void ModelInversion()
     {
+        if (Model == null)
+        {
+            return;
+        }
+
         // 機能を切り替える
         _isModelInversion = !_isModelInversion;
 
@@ -286,6 +291,12 @@ public class Live2DModelManager : MonoBehaviour
     // モデルの状態をリセットする
     public void ModelReset()
     {
+        // モデルがセットされていなかった場合
+        if (Model == null)
+        {
+            return;
+        }
+
         // モデルのトランスフォームを取得
         var modelObjectTransform = _modelObject.transform;
 
@@ -308,6 +319,11 @@ public class Live2DModelManager : MonoBehaviour
     // モデルの状態を固定する
     public void ModelTransformLock()
     {
+        if (Model == null)
+        {
+            return;
+        }
+
         // 機能を切り替える
         _isModelLocked = !_isModelLocked;
 
