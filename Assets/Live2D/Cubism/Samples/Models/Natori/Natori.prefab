@@ -13813,7 +13813,6 @@ GameObject:
   - component: {fileID: 95434638689952108}
   - component: {fileID: 114683656935409580}
   - component: {fileID: 114843234341511188}
-  - component: {fileID: -438742416590001068}
   m_Layer: 0
   m_Name: Natori
   m_TagString: Untagged
@@ -14572,18 +14571,6 @@ MonoBehaviour:
           Default: 0
     Gravity: {x: 0, y: -1}
     Wind: {x: 0, y: 0}
---- !u!114 &-438742416590001068
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1505353683476866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a162b857e4416245819153f6e443839, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1506223167994700
 GameObject:
   m_ObjectHideFlags: 0
