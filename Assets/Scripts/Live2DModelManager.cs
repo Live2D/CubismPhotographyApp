@@ -99,10 +99,10 @@ public class Live2DModelManager : MonoBehaviour
     private void Awake()
     {
         // モデルがセットされていなかった場合
-        if (!Model)
+        if (Model == null)
         {
            Debug.LogError("[Live2DModelManager]: モデルが入力されていません");
-           Application.Quit();
+           return;
         }
 
         // カメラへの参照を取得
@@ -117,6 +117,11 @@ public class Live2DModelManager : MonoBehaviour
         // 光線との衝突判定用コンポーネントを取得
         _modelRaycaster = _modelObject.GetComponent<CubismRaycaster>();
 
+        if (_modelRaycaster == null)
+        {
+            Debug.LogError("[Live2DModelManager]: CubismRaycasterがモデルのプレハブに存在しません");
+        }
+
         // 衝突したアートメッシュの配列の初期化
         // 保存する個数は任意（今回は4つまで）
         _raycastHits = new CubismRaycastHit[4];
@@ -128,13 +133,13 @@ public class Live2DModelManager : MonoBehaviour
     private void Update()
     {
         // タッチの判定が無かった場合
-        if (Input.touchCount == 0 || _isModelLocked)
+        if (Input.touchCount == 0 || _isModelLocked || Model == null)
         {
             return;
         }
 
-        // 指がモデルに触れていた場合
-        if(Input.touchCount == 1)
+        // 指がモデルに触れていて、当たり判定が取得出来る場合
+        if(Input.touchCount == 1 && _modelRaycaster != null)
         {
             var touch = Input.GetTouch(0);
 
@@ -263,6 +268,11 @@ public class Live2DModelManager : MonoBehaviour
     // ボタンを押したら左右反転機能切り替え
     public void ModelInversion()
     {
+        if (Model == null)
+        {
+            return;
+        }
+
         // 機能を切り替える
         _isModelInversion = !_isModelInversion;
 
@@ -286,6 +296,12 @@ public class Live2DModelManager : MonoBehaviour
     // モデルの状態をリセットする
     public void ModelReset()
     {
+        // モデルがセットされていなかった場合
+        if (Model == null)
+        {
+            return;
+        }
+
         // モデルのトランスフォームを取得
         var modelObjectTransform = _modelObject.transform;
 
@@ -308,6 +324,11 @@ public class Live2DModelManager : MonoBehaviour
     // モデルの状態を固定する
     public void ModelTransformLock()
     {
+        if (Model == null)
+        {
+            return;
+        }
+
         // 機能を切り替える
         _isModelLocked = !_isModelLocked;
 
