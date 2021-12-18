@@ -2,15 +2,65 @@
 
 ## 概要
 
-このプロジェクトは現実のカメラ映像と合わせて任意のモデルを一体表示するプロジェクトです。
-ポストプロセスと組み合わせて、エフェクトを適用した状態も作成することが可能です。
+このプロジェクトは現実のカメラ映像と合わせて Live2D Cubism 4 Editor で出力したモデルを一体表示するプロジェクトです。 ポストプロセスと組み合わせて、エフェクトを適用した状態も作成することが可能です。
 
-なお、このプロジェクトはUnity Remote 5との連携を前提として作成されています。ビルドさせての動作につきましては確認しておりませんのであらかじめご了承ください。
+Cubism SDK for Unity と組み合わせて使用します。
+
+また、Unity Remote 5との連携を前提として作成されています。 ビルドさせての動作につきましては確認しておりませんのであらかじめご了承ください。
+
 Unity Remote 5について詳しくは下記リンク先をご確認ください。
 https://docs.unity3d.com/ja/2019.4/Manual/UnityRemote5.html
 
-このプロジェクトを利用するには `Cubism Core for Unity` が必要となります。
-Live2D 公式ホームページの Cubism SDK ダウンロードページより `Cubism SDK for Unity` をダウンロードし、プロジェクトへインポートの上ご利用ください。
+利用には事前に下記のダウンロードが必要です
+
+* Unity Hub
+* Unity（推奨:2019 LTS）
+    * Unity Remote 5を利用する端末のOSのプラットフォームモジュール
+* SDK for Unity
+
+
+## Cubism SDK for Unity
+
+モデルを表示、操作するための各種機能を提供します。
+
+本プロジェクトには Live2D Cubism Core for Unity が含まれておりません。
+
+Live2D 公式ホームページの Cubism SDK ダウンロードページよりダウンロードし、プロジェクトへインポートの上ご利用ください。
+
+[Cubism SDK](https://www.live2d.com/download/cubism-sdk/)
+
+
+## SDKマニュアル・チュートリアル
+
+[Cubism SDK Manual](https://docs.live2d.com/cubism-sdk-manual/top/)
+
+[Cubism SDK Tutorial](https://docs.live2d.com/cubism-sdk-tutorials/top/)
+
+## ライセンス
+
+本 SDK を使用する前に [ライセンス](Assets/Live2D/Cubism/LICENSE.md) をご確認ください。
+
+
+## 注意事項
+
+本 SDK を使用する前に [注意事項](Assets/Live2D/Cubism/NOTICE.md) をご確認ください。
+
+
+## プロジェクトの機能について
+
+
+## ディレクトリ構成
+
+Assets以下のディレクトリの構成
+
+```
+Assets
+├─ Live2D           # Live2D Cubism SDK for Unity が含まれるディレクトリ
+├─ Scenes           # シーンとシーン用のポストプロセスプロファイルが含まれるディレクトリ
+├─ Scripts          # プロジェクト用のスクリプトファイルが含まれるディレクトリ
+└─ Textures         # UI用のテクスチャが含まれるディレクトリ
+```
+
 
 ## プロジェクトの利用方法
 
@@ -29,12 +79,15 @@ Live2D 公式ホームページの Cubism SDK ダウンロードページより 
 
 Cubism SDK 公式チュートリアルページの `SDK for Unity/コンポーネントの使い方/当たり判定の設定` の手順を参考にしてください。
 
-[Cubism SDK 公式チュートリアル 当たり判定の設定](https://docs.live2d.com/cubism-sdk-tutorials/hittest/#)
+[Cubism SDK 公式チュートリアル 当たり判定の設定](https://docs.live2d.com/cubism-sdk-tutorials/hittest/)
 
-## 当プロジェクトを利用したアプリケーション開発について
 
-当プロジェクトには `Cubism SDK for Unity` が使用されております。
-したがって、当プロジェクトを利用してアプリケーションをリリースする場合には出版許諾契約等の各種契約が必要となります。
+## 本プロジェクトを利用したアプリケーション開発について
+
+本プロジェクトには `Cubism SDK for Unity` が使用されております。
+
+したがって、本プロジェクトを利用してアプリケーションをリリースする場合には出版許諾契約等の各種契約が必要となります。
+
 詳しくは下記リンク先をご確認ください。
 
 [Cubism SDK リリースライセンス](https://www.live2d.com/download/cubism-sdk/release-license/)
