@@ -48,13 +48,6 @@ public class Live2DModelManager : MonoBehaviour
     // 生成されたモデルのオブジェクト
     private GameObject _modelObject;
 
-    // モデルと光線の衝突判定用コンポーネント
-    private CubismRaycaster _modelRaycaster;
-
-    // 光線と衝突したアートメッシュの配列
-    // 判定するアートメッシュにはCubismRaycastableが必要
-    private CubismRaycastHit[] _raycastHits;
-
     // タッチし始めた位置
     private Vector3 _touchPosition = Vector3.zero;
 
@@ -114,18 +107,6 @@ public class Live2DModelManager : MonoBehaviour
         // コンポーネントをアタッチ
         _sampler = _modelObject.AddComponent<AnimationClipSampler>();
 
-        // 光線との衝突判定用コンポーネントを取得
-        _modelRaycaster = _modelObject.GetComponent<CubismRaycaster>();
-
-        if (_modelRaycaster == null)
-        {
-            Debug.LogError("[Live2DModelManager]: CubismRaycasterがモデルのプレハブに存在しません");
-        }
-
-        // 衝突したアートメッシュの配列の初期化
-        // 保存する個数は任意（今回は4つまで）
-        _raycastHits = new CubismRaycastHit[4];
-
         _modelObject.GetComponent<CubismUpdateController>().Refresh();
     }
 
@@ -138,48 +119,13 @@ public class Live2DModelManager : MonoBehaviour
             return;
         }
 
-        // 指がモデルに触れていて、当たり判定が取得出来る場合
-        if(Input.touchCount == 1 && _modelRaycaster != null)
-        {
-            var touch = Input.GetTouch(0);
-
-            _touchPosition = touch.position;
-
-            // タッチした位置から判定用の光線を飛ばす
-            var ray = _mainCamera.ScreenPointToRay(_touchPosition);
-
-            // 光線と衝突したアートメッシュの個数を取得
-            var hitCount = _modelRaycaster.Raycast(ray, _raycastHits);
-
-            // モデルと光線が衝突したら処理を始める
-            if (hitCount > 0)
-            {
-                if (touch.phase == TouchPhase.Moved)
-                {
-                    // 移動した移動量を計算
-                    var positionDifference = _touchPosition - _previousTouchPosition;
-
-                    // モデルの位置情報をスクリーン座標へ変換
-                    _modelScreenPosition = _mainCamera.WorldToScreenPoint(_modelObject.transform.position);
-
-                    // 移動量をモデルのスクリーン座標へ加算
-                    _modelScreenPosition.x += positionDifference.x;
-                    _modelScreenPosition.y += positionDifference.y;
-
-                    // 移動量を加算した位置情報をモデルオブジェクトへ適用
-                    _modelObject.transform.position = _mainCamera.ScreenToWorldPoint(_modelScreenPosition);
-                }
-
-                // 最後に観測した位置を保存
-                _previousTouchPosition = _touchPosition;
-            }
-        }
-
         // ピンチインアウト・回転処理
         if (Input.touchCount >= 2)
         {
             var touch1 = Input.GetTouch(0);
             var touch2 = Input.GetTouch(1);
+
+            _touchPosition = (touch2.position + touch1.position) / 2.0f;
 
             // 2本指でタッチし始めた
             if (touch2.phase == TouchPhase.Began)
@@ -196,7 +142,7 @@ public class Live2DModelManager : MonoBehaviour
                 // 最後に観測した2点間のベクトルを保存
                 _previousVector = beginVector;
             }
-            // ピンチインアウト開始
+            // ピンチインアウト、もしくは移動開始
             else if(touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
             {
                 // 2点間の距離を取得
@@ -261,7 +207,27 @@ public class Live2DModelManager : MonoBehaviour
                 _previousVector = differenceVector;
 
                 #endregion
+
+                #region 移動処理
+
+                // 移動した移動量を計算
+                var positionDifference = _touchPosition - _previousTouchPosition;
+
+                // モデルの位置情報をスクリーン座標へ変換
+                _modelScreenPosition = _mainCamera.WorldToScreenPoint(_modelObject.transform.position);
+
+                // 移動量をモデルのスクリーン座標へ加算
+                _modelScreenPosition.x += positionDifference.x;
+                _modelScreenPosition.y += positionDifference.y;
+
+                // 移動量を加算した位置情報をモデルオブジェクトへ適用
+                _modelObject.transform.position = _mainCamera.ScreenToWorldPoint(_modelScreenPosition);
+
+                #endregion
             }
+
+            // 最後に観測した位置を保存
+            _previousTouchPosition = _touchPosition;
         }
     }
 
